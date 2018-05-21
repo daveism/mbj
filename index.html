@@ -25,50 +25,72 @@
 <body>
   <style>
     .menu {
+      font: 18px 'Helvetica Neue', Arial, Helvetica, sans-serif;
       z-index: 1;
       top: 10px;
       right: 20px;
-      position: absolute;
-      background: #BBBBBB;
-      width: 150px;
-      border-radius: 4px;
       text-decoration: none;
       color: #000;
-      font-size: 14px;
-      /* display: block; */
-      s margin: 0 auto;
+      font-size: 18px;
+      display: block;
+      margin: 0 auto;
       padding: 0;
       text-align: center;
+      position: absolute;
+      background-color: white;
+      border-radius: 4px;
     }
 
-    .menu input[type=checkbox]:first-child+label {}
+    .label {
+      display: block;
+      position: relative;
+      text-align: left;
+      /* width: 200px; */
+      /* position: relative; */
+      padding: 0px 35px;
+      margin-bottom: 12px;
+      font-size: 18px;
+      z-index: 1;
+      cursor: pointer;
+    }
 
-    .menu input[type=checkbox] {
+    .label input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .check {
+      position: absolute;
+      top: 0;
+      left: 5px;
+      height: 25px;
+      width: 25px;
+      background-color: #ccc;
+    }
+
+    .label:hover input~.check {
+      background-color: #5D5D5E;
+    }
+
+    .label input:checked~.check {
+      background-color: #BBBBBC;
+    }
+
+    .label input:checked~.check:after {
       display: block;
     }
 
-    .menu input[type=checkbox]+label {
-      /* display: block;
-      padding: 10px; */
+    .check:after {
+      content: "";
+      position: absolute;
+      display: none;
     }
 
-    /* .menu a:hover {
-      background: #CCC;
+    .label .check:after {
+      content: '✔';
+      margin-left: 5px;
     }
-
-    .menu a.active {
-      background: #BBBBBC;
-      color: #000;
-    }
-
-    .menu a.active:hover {
-      background: #5D5D5E;
-    } */
-
-    /* .menu input[type=checkbox]:checked + label:before {
-           content: '✔';
-           margin-right: 5px;
-       } */
   </style>
   <nav id='menu' class='menu'>Map Layers</nav>
   <div id='map'></div>
@@ -80,43 +102,10 @@
       zoom: 8,
       center: [-74.5447, 40.6892]
     });
-    // var sources =[
-      // // {
-      // // [{
-      // //
-      // //   'type': 'raster',
-      // //   'tiles': [
-      // //     'https://gis.nemac.org/nfwf?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&layers=NA_AssetIndex',
-      // //
-      // //   ],
-      // //   'tileSize': 256
-      // // },{
-      // //
-      // //   'type': 'raster',
-      // //   'tiles': [
-      // //     'https://gis.nemac.org/nfwf?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&layers=NA_ThreatIndex_Ramp',
-      // //
-      // //   ],
-      // //   'tileSize': 256
-      // // },{
-      // //
-      // //   'type': 'raster',
-      // //   'tiles': [
-      // //     'https://gis.nemac.org/nfwf?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&layers=NA_ExposureIndex'
-      // //
-      // //   ],
-      // //   'tileSize': 256
-      // // }
-      //
-      //
-      // // }
-      // 'https://gis.nemac.org/nfwf?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&layers=NA_AssetIndex',
-      //   'https://gis.nemac.org/nfwf?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&layers=NA_ThreatIndex_Ramp',
-      //   'https://gis.nemac.org/nfwf?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&layers=NA_ExposureIndex'
-      // ];
+
     var layers = document.getElementById('menu');
 
-    //on the opening of page all layers load.
+    //on the opening of page no layers load.
     map.on('load', function() {
 
       //add nfwf with correct srs update with bbox
@@ -128,119 +117,73 @@
         ],
         'tileSize': 256
       });
-        map.addLayer({
-          'id': 'NA Exposure Index',
-          'type': 'raster',
-          'source': 'NA Exposure Index',
-          'layout': {
-            'visibility': 'none'
-          },
-          'paint': {}
-        }, 'aeroway-taxiway');
-      //
-        map.addSource('NA Threat Index', {
-          'type': 'raster',
-          'tiles': [
-            'https://gis.nemac.org/nfwf?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&layers=NA_ThreatIndex_Ramp'
-          ],
+      map.addLayer({
+        'id': 'NA Exposure Index',
+        'type': 'raster',
+        'source': 'NA Exposure Index',
+        'layout': {
+          'visibility': 'none'
+        },
+        'paint': {}
+      }, 'aeroway-taxiway');
 
-          'tileSize': 256
-        });
-        map.addLayer({
-          'id': 'NA Threat Index',
-          'type': 'raster',
-          'source': 'NA Threat Index',
-          'layout': {
-            'visibility': 'none'
-          },
-          'paint': {}
-        }, 'aeroway-taxiway'); //new layer
-      //
-        map.addSource('NA Asset Index', {
-          'type': 'raster',
-          'tiles': [
-            'https://gis.nemac.org/nfwf?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&layers=NA_AssetIndex'
-          ],
+      map.addSource('NA Threat Index', {
+        'type': 'raster',
+        'tiles': [
+          'https://gis.nemac.org/nfwf?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&layers=NA_ThreatIndex_Ramp'
+        ],
 
-          'tileSize': 256
-        });
-      //
-        map.addLayer({
-          'id': 'NA Asset Index',
-          'type': 'raster',
-          'source': 'NA Asset Index',
-          'layout': {
-            'visibility': 'none'
-          },
-          'paint': {}
-        }, 'aeroway-taxiway');
-        }); //end of load map
-      //
-      // sources.forEach(function(sources){
-      var layerIds = ['NA Asset Index','NA Threat Index','NA Exposure Index'];
-      // var layers = document.getElementById('menu');
-      for (var i = 0; i < layerIds.length; i++) {
-        var id = layerIds[i];
-        //   map.addSource(id, {
-        //     'type': 'raster',
-        //     // 'data': sources[i]
-        //     // 'source':
-        //     'tiles': [
-        //       sources[i]
-        //     ],
-        //     'tileSize': 256
-        //   }
-        // );
-        // if (!map.getLayer(id)) {
-        //   map.addLayer({
-        //     'id': id,
-        //     'type': 'raster',
-        //     'source': id,
-        //     'layout': {
-        //       'visibility': 'none'
-        //     },
-        //     'paint': {}
-        //   }, 'aeroway-taxiway');
-        // };
-        var box = document.createElement('input');
-        box.type = 'checkbox';
-        box.id = id;
-        box.checked = false;
-        // box.href = '#';
-        var tag = document.createElement('label');
-        tag.setAttribute('for', id);
-        // url.className = 'active';
-        tag.textContent = id;
-        layers.appendChild(box);
-        layers.appendChild(tag);
-        box.addEventListener('change', function(clicked) {
-          map.setLayoutProperty(id, 'visibility',
+        'tileSize': 256
+      });
+      map.addLayer({
+        'id': 'NA Threat Index',
+        'type': 'raster',
+        'source': 'NA Threat Index',
+        'layout': {
+          'visibility': 'none'
+        },
+        'paint': {}
+      }, 'aeroway-taxiway'); //new layer
+
+      map.addSource('NA Asset Index', {
+        'type': 'raster',
+        'tiles': [
+          'https://gis.nemac.org/nfwf?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&layers=NA_AssetIndex'
+        ],
+
+        'tileSize': 256
+      });
+      map.addLayer({
+        'id': 'NA Asset Index',
+        'type': 'raster',
+        'source': 'NA Asset Index',
+        'layout': {
+          'visibility': 'none'
+        },
+        'paint': {}
+      }, 'aeroway-taxiway');
+    }); //end of load map
+
+    var layerIds = ['NA Asset Index', 'NA Threat Index', 'NA Exposure Index'];
+    for (var i = 0; i < layerIds.length; i++) {
+      var id = layerIds[i];
+      var box = document.createElement('input');
+      box.type = 'checkbox';
+      box.id = id;
+      box.checked = false;
+      var tag = document.createElement('label');
+      tag.className = 'label';
+      var span = document.createElement('span');
+      span.setAttribute("class", "check");
+      tag.textContent = id;
+      tag.appendChild(box);
+      tag.appendChild(span);
+      layers.appendChild(tag);
+      box.addEventListener('change', function(clicked) {
+        map.setLayoutProperty(this.id, 'visibility',
           clicked.target.checked ? 'visible' : 'none');
-        });
-      };
-
-
-
-
-        // };
-        // box.onclick = function(clicked) {
-          // clicked.preventDefault();
-          // clicked.stopPropagation();
-          // var currentLayer = this.textContent;
-          // var visibility = map.getLayoutProperty(currentLayer, 'visibility');
-        // if (visibility === 'visible') {
-          // map.setLayoutProperty(currentLayer, 'visibility', 'visible');
-          // this.className = '';
-          // this.checkbox = false;
-        // } else {
-          // this.className = 'active';
-          // map.setLayoutProperty(currentLayer, 'visibility', 'visible');
-          // this.checkbox = true;
-        // }
-      // });
-    // };
-  // });
-  //end of map load
+      });
+    };
   </script>
 
 </body>
